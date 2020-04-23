@@ -103,11 +103,11 @@ btn_upload = widgets.FileUpload()
 
 VBox([widgets.Label('Select your tree.'),
      btn_upload, btn_run, out_pl, lbl_pred])
-     
+```
+
 Select your tree.
 
 Prediction: True; Probability: 0.6025     
-```
 
 It took a lot of determination, but I created my first working computer vision model. The class is on week 6 and this is week 2 material. But I'm glad this is behind me. 
 
