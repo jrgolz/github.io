@@ -2,18 +2,20 @@
 
 Hello and welcome to this blog. Before the coronavirus pandemic had us sheltering place, I decided to take a deep learnings course at USF. I have no computer science background, so I knew it would be tough for me. I have lots of interests, however, and wanted to add deep learnings to that list. My interests range from sports to sewing to parenting. I like to design physical things and create them on a 3D printer. I like being outside. My degree is in economics, my professions is in communications and I work for a VC firm. I'm all over the map. 
 
-Before the course, I crammed on Python, which is compulsory know-how. 
+Before the course, I crammed on Python, which is compulsory know-how for deep learning. 
 
 My first project was a computer vision model, which is suppose to discern between a Torrey pine and a blue spruce. Both are evergreen trees and I was interested to see if a model could understand all ospects of a tree - the shape, trunk, needles, cones, etc. It can as we'll see, but it was a frustrating first project. I first tried to get images from Bing. "Search_images_bing" is part of the fastai library, but my model repeatedly said it was undefined. Fastai requires constant upgrading, but it never addressed the issue. 
 
-### Sidebar: To avoid frustration from undefined code and strange errors, I importand and upgraded all these imports and upgrades at the start of each session:
-* from utils import *
-* from fastai2.vision.widgets import *
-* from fastai2.vision.all import *
-* import pandas as pd
-* import urllib.request
-* !pip install fastai2 --upgrade
-* !pip install fastcore --upgrade
+#### Sidebar: To avoid frustration from undefined code and strange errors, I importand and upgraded all these imports and upgrades at the start of each session:
+```
+from utils import *
+from fastai2.vision.widgets import *
+from fastai2.vision.all import *
+import pandas as pd
+import urllib.request
+!pip install fastai2 --upgrade
+!pip install fastcore --upgrade
+```
 
 The forums couldn't help iwith my image searches either. I had difficulties with Google image search too.
 
