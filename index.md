@@ -6,7 +6,7 @@ Before the course, I crammed on Python, which is compulsory know-how for deep le
 
 My first project was a computer vision model, which is suppose to discern between a Torrey pine and a blue spruce. Both are evergreen trees and I was interested to see if a model could understand all ospects of a tree - the shape, trunk, needles, cones, etc. It can as we'll see, but it was a frustrating first project. I first tried to get images from Bing. "Search_images_bing" is part of the fastai library, but my model repeatedly said it was undefined. Fastai requires constant upgrading, but it never addressed the issue. 
 
-#### Sidebar: To avoid frustration from undefined code and strange errors, I importand and upgraded all these imports and upgrades at the start of each session:
+#### Sidebar: To avoid frustration from undefined code and strange errors, I importand and upgraded all these items at the start of each session:
 ```
 from utils import *
 from fastai2.vision.widgets import *
@@ -17,7 +17,7 @@ import urllib.request
 !pip install fastcore --upgrade
 ```
 
-The forums couldn't help iwith my image searches either. I had difficulties with Google image search too.
+The forums couldn't help with my image searches either. I had difficulties with Google too.
 
 Finally iNaturalist worked. I downloaded hundreds of image urls for each tree type and was able to convert to to jpegs. I found this code to be able to do that: 
 
@@ -52,7 +52,7 @@ dls = ImageDataLoaders.from_name_func(
     label_func=is_Torrey_Pine, item_tfms=RandomResizedCrop(224, min_scale=0.5), batch_tfms=aug_transforms())
 ```
 
-Then to train the data: 
+I tried a few different validation set sizes and item transforms and the ones above seemed to work best. I felt it was good enough for this project so I moved on to train the data, at first with resnet18, then resnet34 for its improved results: 
 
 ```
 learn = cnn_learner(dls, resnet34, metrics=error_rate)
