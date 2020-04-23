@@ -7,13 +7,13 @@ Before the course, I crammed on Python, which is compulsory know-how.
 My first project was a computer vision model, which is suppose to discern between a Torrey pine and a blue spruce. Both are evergreen trees and I was interested to see if a model could understand all ospects of a tree - the shape, trunk, needles, cones, etc. It can as we'll see, but it was a frustrating first project. I first tried to get images from Bing. "Search_images_bing" is part of the fastai library, but my model repeatedly said it was undefined. Fastai requires constant upgrading, but it never addressed the issue. 
 
 ### Sidebar: To avoid frustration from undefined code and strange errors, I importand and upgraded all these imports and upgrades at the start of each session:
-* '<from utils import *>'
-* '<from fastai2.vision.widgets import *>'
-* '<from fastai2.vision.all import *>'
-* '<import pandas as pd>'
-* '<import urllib.request>'
-* '<!pip install fastai2 --upgrade>'
-* '<!pip install fastcore --upgrade>'
+* from utils import *
+* from fastai2.vision.widgets import *
+* from fastai2.vision.all import *
+* import pandas as pd
+* import urllib.request
+* !pip install fastai2 --upgrade
+* !pip install fastcore --upgrade
 
 The forums couldn't help iwith my image searches either. I had difficulties with Google image search too.
 
