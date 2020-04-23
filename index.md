@@ -75,18 +75,21 @@ It looks like there was a little overfitting, but I'm moving on. We can fix that
 
 My model was a little confused with blue spruces, thinking 4 of 96 were Torrey pines. Of 111 Torrey pines, only 1 was confused for a blue spurce. I've got no idea why this doesn't add up to 1024 images. 
 
-For the exciting conclusion, I tested it with a blue spruce (a close up image of needles): 
+For the exciting conclusion, I tested it with a blue spruce (a close up image of needles) with output below: 
 
 ```
 learn_inf.predict('test images/blue spruce test.jpg')
-```
-
-And the output: 
-
-```
 ('False', tensor(0), tensor([1.0000e+00, 2.9401e-08]))
 ```
-It worked! If you recall from above, False = blue spruce
+
+And also a Torrey Pine (full profile of tree): 
+
+```
+learn_inf.predict('test images/Torrey Pine test.jpg')
+('True', tensor(1), tensor([1.8352e-05, 9.9998e-01]))
+```
+
+It worked! If you recall from above, False = blue spruce and True = Torrey Pine
 
 It took a lot of determination, but I created my first working computer vision model. The class is on week 6 and this is week 2 material. But I'm glad this is behind me. 
 
