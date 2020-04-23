@@ -18,14 +18,14 @@ My first project was a computer vision model, which is suppose to discern betwee
 The forums couldn't help iwith my image searches either. I had difficulties with Google image search too.
 
 Finally iNaturalist worked. I downloaded hundreds of image urls for each tree type and was able to convert to to jpegs. I found this code to be able to do that: 
- 
+
+```
 def url_to_jpg(i, url, path):
     filename = 'Torrey Pine-{}.jpg'.format(i)
     full_path = '{}{}'.format(path, filename)
     urllib.request.urlretrieve(url, full_path)
     
     print('{} saved.'.format(filename))
-    
     return None
     
 FILENAME = 'Torrey Pine urls.csv'
@@ -35,25 +35,31 @@ urls = pd.read_csv(FILENAME)
 
 for i, url in enumerate(urls.values):
     url_to_jpg(i, url[0], path)
-    
+```
+
 I repeated the code above to download blue spruces. In total I downloaded 1024 images. There is for sure a better way. 
 
 At this point I tried to merge the download code I found with the code from the lesson. My next hurdle was at the parent_label, which I couldn't figure out. There are a set of functions related to downloading data and untaring data and identifying a path of the data, but I found that confusing. For example "path" doesn't show you the full path, and I couldn't figure out how to see it. That simple thing set me back. My workaround was to put all images in the same folder and just use Caps for Torrey Pine and lowercase for blue spruce. That way my model could know what was what using the "isupper method." Becasue of this, throughout my model, True = Torrey Pine and False = bluespruce. This was how I defined my dataset. 
 
 Next I use fastai's dataloader class to create batches of images to send to the GPU to train the model.
 
+```
 def is_Torrey_Pine(x): return x[0].isupper()
 dls = ImageDataLoaders.from_name_func(
     path, get_image_files(path), valid_pct=0.2, seed=42, 
     label_func=is_Torrey_Pine, item_tfms=RandomResizedCrop(224, min_scale=0.5), batch_tfms=aug_transforms())
+```
 
 Then to train the data: 
 
+```
 learn = cnn_learner(dls, resnet34, metrics=error_rate)
 learn.fine_tune(4)
+```
 
 Here was the output:
 
+```
 epoch	train_loss	valid_loss	error_rate	time
 0	0.855714	0.284190	0.086538	00:04
 epoch	train_loss	valid_loss	error_rate	time
@@ -61,6 +67,7 @@ epoch	train_loss	valid_loss	error_rate	time
 1	0.201745	0.059697	0.024038	00:05
 2	0.150507	0.073935	0.024038	00:05
 3	0.121402	0.077227	0.024038	00:05
+```
 
 It looks like there was a little overfitting, but I'm moving on. We can fix that later. 
 
@@ -68,12 +75,15 @@ My model was a little confused with blue spruces, thinking 4 of 96 were Torrey p
 
 For the exciting conclusion, I tested it with a blue spruce (a close up image of needles): 
 
+```
 learn_inf.predict('test images/blue spruce test.jpg')
+```
 
 And the output: 
 
+```
 ('False', tensor(0), tensor([1.0000e+00, 2.9401e-08]))
-
+```
 It worked! If you recall from above, False = blue spruce
 
 It took a lot of determination, but I created my first working computer vision model. The class is on week 6 and this is week 2 material. But I'm glad this is behind me. 
