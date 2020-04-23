@@ -4,20 +4,86 @@ Hello and welcome to this blog. Before the coronavirus pandemic had us shelterin
 
 Before the course, I crammed on Python, which is compulsory know-how. 
 
-My first project was a tree classifier model, which is suppose to discern between a Torrey pine and a blue spruce. Both are evergreens and I was interested to see if a computer vision model could understand all ospects of a tree - the shape, trunk, needles, cones, etc. It has been frustrating. I tried to use images from Bing. "Search_images_bing" is part of the fastai library, but my model said it was undefined. Fastai requires constant upgrading, but it never addressed the issue. The forums couldn't help either. I had similar issues with Google image search.
+My first project was a tree classifier model, which is suppose to discern between a Torrey pine and a blue spruce. Both are evergreens and I was interested to see if a computer vision model could understand all ospects of a tree - the shape, trunk, needles, cones, etc. It has been frustrating. I tried to use images from Bing. "Search_images_bing" is part of the fastai library, but my model said it was undefined. Fastai requires constant upgrading, but it never addressed the issue. 
 
-Finally iNaturalist worked. I downloaded hundreds of image urls for each tree and was able to convert to to jpegs. At this point I tried to merge what I had done with the code from the lesson. My next hurdle was at the parent_label, which I couldn't figure out. There are a set of functions related to downloading data and untaring data and identifying a path of the data, but I found that confusing. For example "path" doesn't show you the full path, and I couldn't figure out how to see it. That simple thing set me back. My workaround was to put all images in the same folder and just use Caps for Torrey Pine and lowercase for blue spruce. That way my model could know what was what using "isupper." This was how I defined my dataset. 
+* To avoid frustration from undefined code, I importand and upgraded all this at the start of each session
+from utils import *
+from fastai2.vision.widgets import *
+from fastai2.vision.all import *
+import pandas as pd
+import urllib.request
+!pip install fastai2 --upgrade
+!pip install fastcore --upgrade
 
-Next I use fastai's dataloader class to create batches of images to send to the GPU to 
+The forums couldn't help either. I had similar issues with Google image search.
 
+Finally iNaturalist worked. I downloaded hundreds of image urls for each tree and was able to convert to to jpegs. I found this code to be able to do that: 
 
+# i = number of images; url = address of a given image; file_path = where to sav the final image 
+def url_to_jpg(i, url, path):
+    filename = 'Torrey Pine-{}.jpg'.format(i)
+    full_path = '{}{}'.format(path, filename)
+    urllib.request.urlretrieve(url, full_path)
+    
+    print('{} saved.'.format(filename))
+    
+    return None
+    
+FILENAME = 'Torrey Pine urls.csv'
+path = 'tree images/'
 
+# Read list of URLs as Pandas DataFrame
+urls = pd.read_csv(FILENAME)
 
+for i, url in enumerate(urls.values):
+    url_to_jpg(i, url[0], path)
+    
+I repeated the code above to download blue spruces. In total I downloaded 1024 images. There is for sure a better way. 
 
-You can include images:
+At this point I tried to merge what I had done with the code from the lesson. My next hurdle was at the parent_label, which I couldn't figure out. There are a set of functions related to downloading data and untaring data and identifying a path of the data, but I found that confusing. For example "path" doesn't show you the full path, and I couldn't figure out how to see it. That simple thing set me back. My workaround was to put all images in the same folder and just use Caps for Torrey Pine and lowercase for blue spruce. That way my model could know what was what using the "isupper method." Becasue of this, throughout my model, True = Torrey Pine and False = bluespruce. This was how I defined my dataset. 
+
+Next I use fastai's dataloader class to create batches of images to send to the GPU to train the model.  
+
+# Here is a quick detour to Chapter 1 code describing the dataset and moving it to dataloaders. I needed 'isupper'
+def is_Torrey_Pine(x): return x[0].isupper()
+dls = ImageDataLoaders.from_name_func(
+    path, get_image_files(path), valid_pct=0.2, seed=42, 
+    label_func=is_Torrey_Pine, item_tfms=RandomResizedCrop(224, min_scale=0.5), batch_tfms=aug_transforms())
+
+# Back to Chapter 2
+learn = cnn_learner(dls, resnet34, metrics=error_rate)
+learn.fine_tune(4)
+
+*Here is the output
+epoch	train_loss	valid_loss	error_rate	time
+0	0.855714	0.284190	0.086538	00:04
+epoch	train_loss	valid_loss	error_rate	time
+0	0.271987	0.166655	0.057692	00:05
+1	0.201745	0.059697	0.024038	00:05
+2	0.150507	0.073935	0.024038	00:05
+3	0.121402	0.077227	0.024038	00:05
+
+It looks like there was a little overfitting, but I'm moving on. We can fix that later. 
+
+My model was model confused with blue spruces, thinking 4 of 96 were Torrey pines. Of 111 Torrey pines, only 1 was confused for a blue spurce. I've got no idea why this doesn't add up to 1024 images. 
+
+For the exciting conclusion, I tested it with a blue spruce (close up of needles): 
+
+learn_inf.predict('test images/blue spruce test.jpg')
+
+And the output: 
+
+('False', tensor(0), tensor([1.0000e+00, 2.9401e-08]))
+
+It worked! If you recall from above, False = blue spruce
+
+It took a lot of determination, but I created my first working computer vision model.
+
+To build from here, I want to: 
+1. use an existing dataset to save a lot of headaches
+2. build a more sophisticated databock
+3. try a learning rate finder
 
 ![Image of fast.ai logo](images/logo.png)
-
 ## This is a title
-
 And you can include links, like this [link to fast.ai](https://www.fast.ai). Posts will appear after this file. 
