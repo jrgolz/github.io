@@ -1,25 +1,24 @@
 # Deep Learning Determination
 
-Hello and welcome to this blog. Before the coronavirus pandemic had us sheltering place, I decided to take a deep learnings course at USF (virtual  of course). I have no computer science background, so I knew it would be tough for me. I have lots of interests, however, and wanted to add deep learnings to that list. My interests range from sports to sewing to parenting. I like to design physical things and create them on a 3D printer. I like being outside. My degree is in economics, my professions is in communications and I work for a VC firm. I'm all over the map. 
+Hello and welcome to this blog. Before the coronavirus pandemic had us sheltering place, I decided to take a deep learnings course at USF. I have no computer science background, so I knew it would be tough for me. I have lots of interests, however, and wanted to add deep learnings to that list. My interests range from sports to sewing to parenting. I like to design physical things and create them on a 3D printer. I like being outside. My degree is in economics, my professions is in communications and I work for a VC firm. I'm all over the map. 
 
 Before the course, I crammed on Python, which is compulsory know-how. 
 
-My first project was a tree classifier model, which is suppose to discern between a Torrey pine and a blue spruce. Both are evergreens and I was interested to see if a computer vision model could understand all ospects of a tree - the shape, trunk, needles, cones, etc. It has been frustrating. I tried to use images from Bing. "Search_images_bing" is part of the fastai library, but my model said it was undefined. Fastai requires constant upgrading, but it never addressed the issue. 
+My first project was a computer vision model, which is suppose to discern between a Torrey pine and a blue spruce. Both are evergreen trees and I was interested to see if a model could understand all ospects of a tree - the shape, trunk, needles, cones, etc. It can as we'll see, but it was a frustrating first project. I first tried to get images from Bing. "Search_images_bing" is part of the fastai library, but my model repeatedly said it was undefined. Fastai requires constant upgrading, but it never addressed the issue. 
 
-* To avoid frustration from undefined code, I importand and upgraded all this at the start of each session
-from utils import *
-from fastai2.vision.widgets import *
-from fastai2.vision.all import *
-import pandas as pd
-import urllib.request
-!pip install fastai2 --upgrade
-!pip install fastcore --upgrade
+### Sidebar: To avoid frustration from undefined code and strange errors, I importand and upgraded all these imports and upgrades at the start of each session:
+* '<from utils import *>'
+* '<from fastai2.vision.widgets import *>'
+* '<from fastai2.vision.all import *>'
+* '<import pandas as pd>'
+* '<import urllib.request>'
+* '<!pip install fastai2 --upgrade>'
+* '<!pip install fastcore --upgrade>'
 
-The forums couldn't help either. I had similar issues with Google image search.
+The forums couldn't help iwith my image searches either. I had difficulties with Google image search too.
 
-Finally iNaturalist worked. I downloaded hundreds of image urls for each tree and was able to convert to to jpegs. I found this code to be able to do that: 
-
-# i = number of images; url = address of a given image; file_path = where to sav the final image 
+Finally iNaturalist worked. I downloaded hundreds of image urls for each tree type and was able to convert to to jpegs. I found this code to be able to do that: 
+ 
 def url_to_jpg(i, url, path):
     filename = 'Torrey Pine-{}.jpg'.format(i)
     full_path = '{}{}'.format(path, filename)
@@ -32,7 +31,6 @@ def url_to_jpg(i, url, path):
 FILENAME = 'Torrey Pine urls.csv'
 path = 'tree images/'
 
-# Read list of URLs as Pandas DataFrame
 urls = pd.read_csv(FILENAME)
 
 for i, url in enumerate(urls.values):
@@ -40,21 +38,22 @@ for i, url in enumerate(urls.values):
     
 I repeated the code above to download blue spruces. In total I downloaded 1024 images. There is for sure a better way. 
 
-At this point I tried to merge what I had done with the code from the lesson. My next hurdle was at the parent_label, which I couldn't figure out. There are a set of functions related to downloading data and untaring data and identifying a path of the data, but I found that confusing. For example "path" doesn't show you the full path, and I couldn't figure out how to see it. That simple thing set me back. My workaround was to put all images in the same folder and just use Caps for Torrey Pine and lowercase for blue spruce. That way my model could know what was what using the "isupper method." Becasue of this, throughout my model, True = Torrey Pine and False = bluespruce. This was how I defined my dataset. 
+At this point I tried to merge the download code I found with the code from the lesson. My next hurdle was at the parent_label, which I couldn't figure out. There are a set of functions related to downloading data and untaring data and identifying a path of the data, but I found that confusing. For example "path" doesn't show you the full path, and I couldn't figure out how to see it. That simple thing set me back. My workaround was to put all images in the same folder and just use Caps for Torrey Pine and lowercase for blue spruce. That way my model could know what was what using the "isupper method." Becasue of this, throughout my model, True = Torrey Pine and False = bluespruce. This was how I defined my dataset. 
 
-Next I use fastai's dataloader class to create batches of images to send to the GPU to train the model.  
+Next I use fastai's dataloader class to create batches of images to send to the GPU to train the model.
 
-# Here is a quick detour to Chapter 1 code describing the dataset and moving it to dataloaders. I needed 'isupper'
 def is_Torrey_Pine(x): return x[0].isupper()
 dls = ImageDataLoaders.from_name_func(
     path, get_image_files(path), valid_pct=0.2, seed=42, 
     label_func=is_Torrey_Pine, item_tfms=RandomResizedCrop(224, min_scale=0.5), batch_tfms=aug_transforms())
 
-# Back to Chapter 2
+Then to train the data: 
+
 learn = cnn_learner(dls, resnet34, metrics=error_rate)
 learn.fine_tune(4)
 
-*Here is the output
+Here was the output:
+
 epoch	train_loss	valid_loss	error_rate	time
 0	0.855714	0.284190	0.086538	00:04
 epoch	train_loss	valid_loss	error_rate	time
@@ -65,9 +64,9 @@ epoch	train_loss	valid_loss	error_rate	time
 
 It looks like there was a little overfitting, but I'm moving on. We can fix that later. 
 
-My model was model confused with blue spruces, thinking 4 of 96 were Torrey pines. Of 111 Torrey pines, only 1 was confused for a blue spurce. I've got no idea why this doesn't add up to 1024 images. 
+My model was a little confused with blue spruces, thinking 4 of 96 were Torrey pines. Of 111 Torrey pines, only 1 was confused for a blue spurce. I've got no idea why this doesn't add up to 1024 images. 
 
-For the exciting conclusion, I tested it with a blue spruce (close up of needles): 
+For the exciting conclusion, I tested it with a blue spruce (a close up image of needles): 
 
 learn_inf.predict('test images/blue spruce test.jpg')
 
@@ -77,13 +76,12 @@ And the output:
 
 It worked! If you recall from above, False = blue spruce
 
-It took a lot of determination, but I created my first working computer vision model.
+It took a lot of determination, but I created my first working computer vision model. The class is on week 6 and this is week 2 material. But I'm glad this is behind me. 
 
-To build from here, I want to: 
-1. use an existing dataset to save a lot of headaches
-2. build a more sophisticated databock
-3. try a learning rate finder
+If I have time to build from here, I want to: 
+1. Instead of hunting down a unique dataset, use an existing one to save a lot of headaches
+2. Build a more sophisticated databock
+3. Try a learning rate finder
+4. Use multi-label clasification to create a more helpful model that somebody might really want to use
 
-![Image of fast.ai logo](images/logo.png)
-## This is a title
-And you can include links, like this [link to fast.ai](https://www.fast.ai). Posts will appear after this file. 
+
