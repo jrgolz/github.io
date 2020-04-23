@@ -89,7 +89,25 @@ learn_inf.predict('test images/Torrey Pine test.jpg')
 ('True', tensor(1), tensor([1.8352e-05, 9.9998e-01]))
 ```
 
-It worked! If you recall from above, False = blue spruce and True = Torrey Pine
+It worked! If you recall from above, False = blue spruce and True = Torrey Pine. Fast forward to the GUI for the production site: 
+
+```
+def on_click_classify(change):
+    img = PILImage.create(btn_upload.data[-1])
+    out_pl.clear_output()
+with out_pl: display(img.to_thumb(128,128))
+pred, pred_idx,probs = learn_inf.predict(img)
+lbl_pred.value = f'Prediction: {pred}; Probability: {probs[pred_idx]:.04f}'
+
+btn_upload = widgets.FileUpload()
+
+VBox([widgets.Label('Select your tree.'),
+     btn_upload, btn_run, out_pl, lbl_pred])
+     
+Select your tree.
+
+Prediction: True; Probability: 0.6025     
+```
 
 It took a lot of determination, but I created my first working computer vision model. The class is on week 6 and this is week 2 material. But I'm glad this is behind me. 
 
