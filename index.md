@@ -41,7 +41,7 @@ for i, url in enumerate(urls.values):
 
 I repeated the code above to download blue spruces. In total I downloaded 1024 images. There is for sure a better way. 
 
-At this point I tried to merge the download code I found with the code from the lesson. My next hurdle was at the parent_label, which I couldn't figure out. There are a set of functions related to downloading data and untaring data and identifying a path of the data, but I found that confusing. For example "path" doesn't show you the full path, and I couldn't figure out how to see it. That simple thing set me back. My workaround was to put all images in the same folder and just use Caps for Torrey Pine and lowercase for blue spruce. That way my model could know what was what using the "isupper method." Becasue of this, throughout my model, True = Torrey Pine and False = bluespruce. This was how I defined my dataset. 
+At this point I tried to merge the download code I found with the code from the lesson. My next hurdle was at the parent_label, which I couldn't figure out. There are a set of functions related to downloading data and untaring data and identifying a path of the data, but I found that confusing. For example "path" doesn't show you the full path, and I couldn't figure out how to see it. That simple thing set me back. My workaround was to put all images in the same folder and just use Caps for Torrey Pine and lowercase for blue spruce. That way my model could know what was what using the "isupper method." Becasue of this, throughout my model, True = Torrey Pine. This was how I defined my dataset. 
 
 Next I use fastai's dataloader class to create batches of images to send to the GPU to train the model.
 
@@ -89,7 +89,7 @@ learn_inf.predict('test images/Torrey Pine test.jpg')
 ('True', tensor(1), tensor([1.8352e-05, 9.9998e-01]))
 ```
 
-It worked! If you recall from above, False = blue spruce and True = Torrey Pine. Fast forward to the GUI for the production site: 
+It worked! If you recall from above, True = Torrey Pine. Fast forward to the GUI for the production site: 
 
 ```
 def on_click_classify(change):
@@ -113,8 +113,15 @@ It took a lot of determination, but I created my first working computer vision m
 
 If I have time to build from here, I want to: 
 1. Instead of hunting down a unique dataset, use an existing one to save a lot of headaches
-2. Build a more sophisticated databock
-3. Try a learning rate finder
-4. Use multi-label clasification to create a more helpful model that somebody might really want to use
+2. Build a more sophisticated datablock
+3. Try Regex so I could include blue spruces and several other tree types
+4. Try a learning rate finder
+5. Use multi-label clasification to create a more helpful model that somebody might really want to use
 
+Here is what is holding me back: 
+1. I don't know what path does. It feels like I should know by know but I don't. 
+    a. Is it the path where to get urls online or is it the local path where things are on my drive? 
+    b. Things worked when I repolicated ^path = untar_data^, but not when I used get_image_files from my local storage on Jupyter notebook. 
+    c. Am I supposed to use ^path = untar_data...^ to pull image urls from inaturalist?
+2. I don't know what the pre-requisites actions are for using regex. I tried to get it to work, but couldnt figure it out. 
 
